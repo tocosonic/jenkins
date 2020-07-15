@@ -9,11 +9,11 @@ ENV MAVEN_VERSION=3.5 \
     MAVEN_OPTS="-Duser.home=$HOME"
 
 # Install Maven
-RUN INSTALL_PKGS="java-11-openjdk-devel java-1.8.0-openjdk-devel rh-maven35*" && \
-    x86_EXTRA_RPMS=$(if [ "$(uname -m)" == "x86_64" ]; then echo -n java-11-openjdk-devel.i686 java-1.8.0-openjdk-devel.i686; fi) && \
+RUN INSTALL_PKGS="java-11-openjdk-devel rh-maven35*" && \
+    x86_EXTRA_RPMS=$(if [ "$(uname -m)" == "x86_64" ]; then echo -n java-11-openjdk-devel.i686; fi) && \
     yum install -y centos-release-scl-rh && \
     yum install -y --setopt=protected_multilib=false --enablerepo=centosplus $INSTALL_PKGS $x86_EXTRA_RPMS && \
-    rpm -V java-11-openjdk-devel.x86_64 java-1.8.0-openjdk-devel.x86_64 rh-maven35 $x86_EXTRA_RPMS && \
+    rpm -V java-11-openjdk-devel.x86_64 rh-maven35 $x86_EXTRA_RPMS && \
     yum clean all -y && \
     mkdir -p $HOME/.m2 
 
@@ -25,5 +25,12 @@ ADD ./contrib/settings.xml $HOME/.m2/
 
 RUN chown -R 1001:0 $HOME && \
     chmod -R g+rw $HOME
+
+#set Java 11 as default
+ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.7.10-4.el7_8.x86_64
+RUN alternatives --set java /usr/lib/jvm/java-11-openjdk-11.0.7.10-4.el7_8.x86_64/bin/java
+#remove Java 1.8
+RUN alternatives --remove java /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.252.b09-2.el7_8.i386/jre/bin/java
+RUN alternatives --remove java /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.252.b09-2.el7_8.x86_64/jre/bin/java
 
 USER 1001
