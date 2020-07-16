@@ -37,8 +37,8 @@ RUN ln -s /usr/bin/pip3.6 /bin/pip
 RUN rm /usr/bin/python
 RUN ln -s /usr/bin/python3.6 /usr/bin/python
 
-RUN pip install --user ruamel.yaml && \    
-    pip install --user python-dotenv
+RUN pip install ruamel.yaml && \    
+    pip install python-dotenv
 
 # Download Hyperledger Fabric Binaries
 RUN mkdir -p $HOME/hlf-binaries && \ 
@@ -47,7 +47,7 @@ RUN mkdir -p $HOME/hlf-binaries && \
     cd $HOME
 
 # Add Binaries to PATH as env
-ENV PATH="${HOME}/hlf-binaries:${PATH}"
+ENV PATH="${HOME}/hlf-binaries/bin:${PATH}"
 
 RUN chown -R 1001:0 $HOME && \
     chmod -R g+rw $HOME
