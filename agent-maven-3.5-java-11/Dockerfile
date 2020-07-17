@@ -32,9 +32,9 @@ RUN alternatives --remove java /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.252.b09-2.e
 
 # Update oc to the most recent version
 ENV OC_DOWNLOAD_URL=https://github.com/openshift/origin/releases/download/v3.11.0/openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit.tar.gz
-
 RUN wget $OC_DOWNLOAD_URL -O /tmp/oc.tgz
 RUN tar xzvf /tmp/oc.tgz --strip-components=1 -C /usr/bin/
+ENV OC_DOWNLOAD_URL=
 
 RUN chown -R 1001:0 $HOME && \
     chmod -R g+rw $HOME
