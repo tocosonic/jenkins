@@ -30,23 +30,32 @@ RUN alternatives --set java /usr/lib/jvm/java-11-openjdk-11.0.7.10-4.el7_8.x86_6
 RUN alternatives --remove java /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.252.b09-2.el7_8.i386/jre/bin/java
 RUN alternatives --remove java /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.252.b09-2.el7_8.x86_64/jre/bin/java
 
+# Update oc to the most recent version
+ENV OC_DOWNLOAD_URL=https://github.com/openshift/origin/releases/download/v3.11.0/openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit.tar.gz
+
+RUN wget $OC_DOWNLOAD_URL -O /tmp/oc.tgz
+RUN tar xzvf /tmp/oc.tgz --strip-components=1 -C /usr/bin/
+
 RUN  yum install -y python36 python36-pip
-# pip has to point to pip.6
+# Pip has to point to pip3.6
 RUN ln -s /usr/bin/pip3.6 /bin/pip
-# python has to point to python3.6 
+# Python has to point to python3.6 
 RUN rm /usr/bin/python
 RUN ln -s /usr/bin/python3.6 /usr/bin/python
 
+RUN mkdir -p $HOME/.cache/pip
+
+# Install Python packages
 RUN pip install ruamel.yaml && \    
     pip install python-dotenv
 
-# Download Hyperledger Fabric Binaries
+# Download Hyperledger Fabric binaries
 RUN mkdir -p $HOME/hlf-binaries && \ 
     cd $HOME/hlf-binaries && \ 
     curl https://raw.githubusercontent.com/hyperledger/fabric/master/scripts/bootstrap.sh | bash -s -- 2.2.0 1.4.7 -d -s && \
     cd $HOME
 
-# Add Binaries to PATH as env
+# Add Binaries to PATH
 ENV PATH="${HOME}/hlf-binaries/bin:${PATH}"
 
 RUN chown -R 1001:0 $HOME && \
