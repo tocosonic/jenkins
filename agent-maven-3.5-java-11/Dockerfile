@@ -17,6 +17,13 @@ RUN INSTALL_PKGS="java-11-openjdk-devel rh-maven35*" && \
     yum clean all -y && \
     mkdir -p $HOME/.m2 
 
+# Install shellcheck (required by SonarQube)
+RUN yum install -y xz
+RUN cd /tmp && export SC_VERSION=latest \
+ && wget -qO- "https://github.com/koalaman/shellcheck/releases/download/${SC_VERSION?}/shellcheck-${SC_VERSION?}.linux.x86_64.tar.xz" | tar -xJv \
+ && cp "shellcheck-${SC_VERSION}/shellcheck" /usr/bin/ \
+ && cd -
+
 # When bash is started non-interactively, to run a shell script, for example it
 # looks for this variable and source the content of this file. This will enable
 # the SCL for all scripts without need to do 'scl enable'.
