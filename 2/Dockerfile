@@ -40,8 +40,16 @@ RUN curl https://pkg.jenkins.io/redhat-stable/jenkins.repo -o /etc/yum.repos.d/j
     x86_EXTRA_RPMS=$(if [ "$(uname -m)" == "x86_64" ]; then echo -n java-11-openjdk.i686 java-11-openjdk-devel.i686 ; fi) && \
     INSTALL_PKGS="dejavu-sans-fonts rsync gettext git tar zip unzip openssl bzip2 dumb-init java-11-openjdk java-11-openjdk-devel jenkins-2.235.2-1.1 nss_wrapper" && \
     yum -y --setopt=protected_multilib=false --setopt=tsflags=nodocs install $INSTALL_PKGS $x86_EXTRA_RPMS && \
-    rpm -V  $INSTALL_PKGS $x86_EXTRA_RPMS && \
-    yum clean all  && \
+    rpm -V  $INSTALL_PKGS $x86_EXTRA_RPMS
+
+# Install shellcheck (required by SonarQube)
+RUN yum install -y xz
+RUN cd /tmp && export SC_VERSION=latest \
+ && wget -qO- "https://github.com/koalaman/shellcheck/releases/download/${SC_VERSION?}/shellcheck-${SC_VERSION?}.linux.x86_64.tar.xz" | tar -xJv \
+ && cp "shellcheck-${SC_VERSION}/shellcheck" /usr/bin/ \
+ && cd -
+
+RUN yum clean all  && \
     localedef -f UTF-8 -i en_US en_US.UTF-8
 
 COPY ./contrib/openshift /opt/openshift
