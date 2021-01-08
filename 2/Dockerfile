@@ -41,7 +41,7 @@ RUN x86_EXTRA_RPMS=$(if [ "$(uname -m)" == "x86_64" ]; then echo -n java-11-open
     INSTALL_PKGS="dejavu-sans-fonts rsync gettext git tar zip unzip openssl bzip2 dumb-init java-11-openjdk java-11-openjdk-devel nss_wrapper" && \
     yum -y --setopt=protected_multilib=false --setopt=tsflags=nodocs install $INSTALL_PKGS $x86_EXTRA_RPMS && \
     rpm -V  $INSTALL_PKGS $x86_EXTRA_RPMS
-RUN INSTALL_JENKINS="jenkins-2.245-1.1" && yum install -y $INSTALL_JENKINS
+RUN INSTALL_JENKINS="jenkins-2.274-1.1" && yum install -y $INSTALL_JENKINS
 
 # Install shellcheck (required by SonarQube)
 RUN yum install -y xz
