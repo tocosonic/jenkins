@@ -45,6 +45,13 @@ ENV OC_DOWNLOAD_URL=
 
 RUN  yum install -y python36 python36-pip
 
+RUN  yum install -y yum-utils
+RUN  yum-config-manager \
+     --add-repo \
+     https://download.docker.com/linux/centos/docker-ce.repo
+RUN  yum install -y docker-ce docker-ce-cli containerd.io
+
+
 # Pip has to point to pip3.6
 RUN ln -s /usr/bin/pip3.6 /bin/pip
 # Python has to point to python3.6 
@@ -68,5 +75,11 @@ ENV PATH="${HOME}/hlf-binaries/bin:${PATH}"
 
 RUN chown -R 1001:0 $HOME && \
     chmod -R g+rw $HOME
+
+#RUN yum install -y yum-utils
+#RUN yum config-manager \
+#    --add-repo \
+#    https://download.docker.com/linux/centos/docker-ce.repo
+#RUN yum install -y docker-ce docker-ce-cli containerd.io
 
 USER 1001
